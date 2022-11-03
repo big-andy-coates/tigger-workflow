@@ -8,7 +8,7 @@ on:
         required: true
 
 jobs:
-  bump-version:
+  push-tag:
     runs-on: ubuntu-latest
     steps:
       - name: Echo
@@ -31,11 +31,7 @@ jobs:
 
       - name: Push tag
         run: |
-          git config user.name "Creek-bot"
-          git config user.email "95620007+Creek-Bot@users.noreply.github.com"
-          echo
-          echo "Adding tag ${{ github.event.inputs.tag }}"
+          git config user.name "Andy Coates"
+          git config user.email "8012398+big-andy-coates@users.noreply.github.com"
           git tag -am "Tag: ${{ github.event.inputs.tag }}" ${{ github.event.inputs.tag }}
-          echo
-          echo "https://$GITHUB_ACTOR:${{ secrets.TRIGGER_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
-          git push --tags "https://$GITHUB_ACTOR:${{ secrets.TRIGGER_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
+          git push --tags
