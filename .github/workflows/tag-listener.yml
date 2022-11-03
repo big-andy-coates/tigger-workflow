@@ -1,0 +1,13 @@
+name: Tag listener
+
+on:
+  push:
+    tags: [ "*" ]
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: It worked!
+        run: |
+          echo "github.ref: ${{ github.ref }}"
