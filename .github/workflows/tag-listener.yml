@@ -2,7 +2,7 @@ name: Tag listener
 
 on:
   push:
-    tags: [ "*" ]
+    tags: [ "**" ]
 
 jobs:
   on-tag:
