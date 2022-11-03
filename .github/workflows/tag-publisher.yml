@@ -23,7 +23,7 @@ jobs:
           fi
 
       - uses: actions/checkout@v3.1.0
-        env:
+        with:
           token: ${{ secrets.TRIGGER_GITHUB_TOKEN }}
 
       - name: Fetch all tags
