@@ -3,48 +3,39 @@ name: Tag Publisher
 on:
   workflow_dispatch:
     inputs:
-      forceVersion:
-        description: 'Force version'
-        required: false
-        default: ''
+      tag:
+        description: 'Tag'
+        required: true
 
 jobs:
-  version:
+  bump-version:
     runs-on: ubuntu-latest
     steps:
       - name: Echo
         run: |
           echo "github.ref: ${{ github.ref }}"
           echo "github.actor: ${{ github.actor }}"
-          echo "secrets.TRIGGER_GITHUB_TOKEN: ${{ secrets.TRIGGER_GITHUB_TOKEN }}"
+          
+          if [ -n "${{ secrets.TRIGGER_GITHUB_TOKEN }}" ]; then
+              echo "pat present"
+          else
+              echo "pat NOT present"
+          fi
 
       - uses: actions/checkout@v3.1.0
         env:
-          token: ${{ secrets.TRIGGER_GITHUB_TOKEN }}           # Todo: required?
-          GITHUB_TOKEN: ${{ secrets.TRIGGER_GITHUB_TOKEN }}    # Todo: required?
+          token: ${{ secrets.TRIGGER_GITHUB_TOKEN }}
 
       - name: Fetch all tags
         run: git fetch --tags --unshallow
 
-      - name: Get next version
-        id: 'bump'
-        uses: allegro-actions/next-version@v1
-
-      - name: Push new tag on master
-        env:
-          GITHUB_TOKEN: ${{ secrets.TRIGGER_GITHUB_TOKEN }}
-          TAG: ${{ steps.bump.outputs.next_tag }}
-          CURRENT_RELEASE: ${{ steps.bump.outputs.current_tag }}
+      - name: Push tag
         run: |
-          echo "CURRENT RELEASE $CURRENT_RELEASE"
-          echo "NEW TAG $TAG"
-          echo "CURRENT TAGS:"
-          git tag --points-at HEAD
-          echo
           git config user.name "Creek-bot"
           git config user.email "95620007+Creek-Bot@users.noreply.github.com"
           echo
-          git tag -am "$TAG" $TAG
+          echo "Adding tag ${{ github.event.inputs.tag }}"
+          git tag -am "Tag: ${{ github.event.inputs.tag }}" ${{ github.event.inputs.tag }}
           echo
           echo "https://$GITHUB_ACTOR:${{ secrets.TRIGGER_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
           git push --tags "https://$GITHUB_ACTOR:${{ secrets.TRIGGER_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
